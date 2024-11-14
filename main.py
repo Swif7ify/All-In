@@ -1,6 +1,7 @@
 import pygame
 from handle import Handle
 from spin import Spin
+from slots import Slot
 
 class Game:
     def __init__(self):
@@ -25,6 +26,8 @@ class Game:
         self.amountBet = 0
         # spin logic
         self.spin = Spin(self.balance, self.amountLines, self.amountBet)
+        # slot image
+        self.slot = [Slot(195 + (i % 3) * 160, (700 // 2 - 117) - (96 // 2) + (i // 3) * 117) for i in range(9)]
         # input boxes in information
         self.active_color = (22, 190, 128)
         self.inactive_color = (201, 186, 167)
@@ -471,10 +474,16 @@ class Game:
 
     def update_information(self):
         bettingInfo = pygame.font.Font("fonts/Quinquefive-ALoRM.ttf", 15)
+
         bettingText = bettingInfo.render(f"Betting {self.amountBet:,} on {self.amountLines} Lines", True, (0, 0, 0))
         bettingText_rect = bettingText.get_rect(center=(self.width // 2, self.height // 2 - 220))
         self.screen.blit(bettingText, bettingText_rect)
         pygame.display.update()
+
+    def update_spin(self):
+        self.spin = Spin(self.balance, self.amountLines, self.amountBet)
+        amount = self.spin.start()
+        self.balance = amount
 
     def run(self):
         # Game loop
@@ -486,19 +495,20 @@ class Game:
         pauseButton = pygame.transform.scale(pygame.image.load("objects/pauseButton.png"), (50, 50)).convert_alpha()
         pauseButtonHitbox = pauseButton.get_rect(topleft=(720, 20))
 
-        # betting information
-
-
         # slot machine Body
-        slotMachine = pygame.transform.scale(pygame.image.load("objects/slotMachine.png"), (513, 196)).convert_alpha()
-        slotMachine_rect = slotMachine.get_rect(center=(self.width // 2, self.height // 2 - 90))
+        slotMachine = pygame.transform.scale(pygame.image.load("objects/slotMachine.png"), (501.2, 373.8)).convert_alpha()
+        slotMachine_rect = slotMachine.get_rect(center=(self.width // 2, self.height // 2))
+        slotLine1 = pygame.Rect((145, self.height // 2 - 175), (slotMachine.get_width(), slotMachine.get_height() / 3.3))
+        slotLine2 = pygame.Rect((145, self.height // 2 - 175 + 120), (slotMachine.get_width(), slotMachine.get_height() / 3.3))
+        slotLine3 = pygame.Rect((145, self.height // 2 - 175 + 240), (slotMachine.get_width(), slotMachine.get_height() / 3.3))
+        slot_line_rects = [slotLine1, slotLine2, slotLine3]
 
         # buttons for slot machine
         betButton = pygame.transform.scale(pygame.image.load("objects/buttonBet.png"), (191.36, 63.18)).convert_alpha()
-        betButtonHitBox = betButton.get_rect(center=(self.width // 2 - 110, self.height // 2 + 70))
+        betButtonHitBox = betButton.get_rect(center=(self.width // 2 - 110, self.height // 2 + 230))
 
         lineButton = pygame.transform.scale(pygame.image.load("objects/buttonLines.png"), (191.36, 63.18)).convert_alpha()
-        lineButtonHitBox = lineButton.get_rect(center=(self.width // 2 + 110, self.height // 2 + 70))
+        lineButtonHitBox = lineButton.get_rect(center=(self.width // 2 + 110, self.height // 2 + 230))
 
         while self.running:
             for event in pygame.event.get():
@@ -508,7 +518,7 @@ class Game:
                 if event.type == pygame.MOUSEMOTION:
                     if pauseButtonHitbox.collidepoint(event.pos) or betButtonHitBox.collidepoint(event.pos) or lineButtonHitBox.collidepoint(event.pos):
                         pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_HAND)
-                    elif self.handle_sprite.rect.collidepoint(event.pos):
+                    elif self.handle_sprite.rect.collidepoint(event.pos) and not self.handle_sprite.animating:
                         pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_HAND)
                     else:
                         pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_ARROW)
@@ -528,10 +538,28 @@ class Game:
                         if self.handle_sprite.index == 0:
                             pygame.mixer.Sound("sounds/handleSound.mp3").play()
                             pygame.mixer.Sound("sounds/slotSpin.mp3").play()
+                            for slot in self.slot:
+                                slot.spinning = True
+                                slot.default()
+                            self.update_spin() # logic for getting wins
+
 
             self.screen.fill(self.bgColor)
             self.screen.blit(pauseButton, (720, 20))
             self.screen.blit(slotMachine, slotMachine_rect)
+            for slot in self.slot[0:3]:
+                slot.draw(self.screen, slotLine1)
+                if slot.spinning:
+                    slot.update_position1()
+            for slot in self.slot[3:6]:
+                slot.draw(self.screen, slotLine2)
+                if slot.spinning:
+                    slot.update_position2()
+            for slot in self.slot[6:9]:
+                slot.draw(self.screen, slotLine3)
+                if slot.spinning:
+                    slot.update_position3()
+
             self.screen.blit(betButton, betButtonHitBox)
             self.screen.blit(lineButton, lineButtonHitBox)
             self.all_sprites.update()
@@ -540,6 +568,7 @@ class Game:
             self.update_information()
             self.clock.tick(120)
             pygame.display.update()
+
 
 if __name__ == "__main__":
     game = Game()

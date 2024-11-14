@@ -4,12 +4,12 @@ import pygame
 class Handle(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
-        handle1 = pygame.transform.scale(pygame.image.load(os.path.join("sprite", "handle1.png")), (123.9, 105))
-        handle2 = pygame.transform.scale(pygame.image.load(os.path.join("sprite", "handle2.png")), (123.9, 105))
+        handle1 = pygame.transform.scale(pygame.image.load(os.path.join("sprite", "handle1.png")), (135.3, 115.5))
+        handle2 = pygame.transform.scale(pygame.image.load(os.path.join("sprite", "handle2.png")), (135.3, 115.5))
         self.images = [handle1, handle2]
         self.index = 0
         self.image = self.images[self.index]
-        self.rect = self.image.get_rect(center=(800 // 2 + 318, 700 //2 - 80))
+        self.rect = self.image.get_rect(center=(800 // 2 + 318, 700 //2))
         self.animating = False
         self.delay_counter = 0
         self.delay_duration = 400  # Number of frames to hold on handle2

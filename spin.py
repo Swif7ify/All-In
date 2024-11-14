@@ -1,12 +1,13 @@
 import pygame
 import random
-pygame.init()
 class Spin:
     def __init__(self, Balance, Lines, Bet):
-        screen = pygame.display.set_mode((800, 700))
+        self.screen = pygame.display.set_mode((800, 700))
         self.Balance = Balance
         self.Lines = Lines
         self.Bet = Bet
+
+        self.selected_rows = []
 
         self.ROWS = 3
         self.COLS = 3
@@ -17,8 +18,7 @@ class Spin:
         self.green_apple = pygame.image.load("objects/greenApple.png").convert_alpha() # highest value
         self.peach = pygame.image.load("objects/peach.png").convert_alpha() # second lowest value
 
-
-        screen.fill((255, 255, 255))
+        self.spinning = False
 
         self.a_line = [self.red_apple,
                   self.green_apple,
@@ -56,13 +56,13 @@ class Spin:
                             self.green_apple: 5}
 
     def slot_spin(self):
-        selected_rows = [
+        self.selected_rows = [
             [(random.choice(self.a_line)) for _ in range(self.COLS)],
             [(random.choice(self.b_line)) for _ in range(self.COLS)],
             [(random.choice(self.c_line)) for _ in range(self.COLS)]
         ]
 
-        return selected_rows
+        return self.selected_rows
 
     def check_winnings(self):
         condition = False
@@ -86,10 +86,9 @@ class Spin:
             self.Balance += amount
         else:
             self.Balance -= self.Bet
+            return self.Balance
 
         return self.Balance
 
-# <Surface(200x193x32 SW)>
-# <Surface(190x200x32 SW)>
-# <Surface(175x200x32 SW)>
-# <Surface(183x200x32 SW)>
+    def start(self):
+        return self.check_winnings()
