@@ -15,7 +15,7 @@ class Handle(pygame.sprite.Sprite):
         self.delay_duration = 400  # Number of frames to hold on handle2
 
     def update(self):
-        # If animating, switch to handle2 then back to handle1 with delay
+        # If animating switch to handle2 then back to handle1 with delay
         if self.animating:
             if self.index == 0:  # Switch to handle2
                 self.index = 1

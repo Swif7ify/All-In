@@ -61,10 +61,10 @@ class Spin:
             [(random.choice(self.b_line)) for _ in range(self.COLS)],
             [(random.choice(self.c_line)) for _ in range(self.COLS)]
         ]
-
         return self.selected_rows
 
     def check_winnings(self):
+        print(self.Lines)
         condition = False
         for row in self.slot_spin():
             if row[0] == row[1] == row[2]:
@@ -88,7 +88,8 @@ class Spin:
             self.Balance -= self.Bet
             return self.Balance
 
+
         return self.Balance
 
     def start(self):
-        return self.check_winnings()
+        return self.check_winnings(), self.selected_rows

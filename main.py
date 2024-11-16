@@ -26,6 +26,7 @@ class Game:
         self.amountBet = 0
         # spin logic
         self.spin = Spin(self.balance, self.amountLines, self.amountBet)
+        self.selected_rows = []
         # slot image
         self.slot = [Slot(195 + (i % 3) * 160, (700 // 2 - 117) - (96 // 2) + (i // 3) * 117) for i in range(9)]
         # input boxes in information
@@ -482,12 +483,16 @@ class Game:
 
     def update_spin(self):
         self.spin = Spin(self.balance, self.amountLines, self.amountBet)
-        amount = self.spin.start()
+        amount, self.selected_rows = self.spin.start()
         self.balance = amount
+        for i, slot in enumerate(self.slot):
+            row = i // 3
+            col = i % 3
+            slot.current_image = self.selected_rows[row][col]
 
     def run(self):
         # Game loop
-        # self.main_screen()
+        self.main_screen()
         pygame.mixer.music.set_volume(0.5)
         # if self.protect == "":
         #     pygame.quit()
@@ -501,7 +506,6 @@ class Game:
         slotLine1 = pygame.Rect((145, self.height // 2 - 175), (slotMachine.get_width(), slotMachine.get_height() / 3.3))
         slotLine2 = pygame.Rect((145, self.height // 2 - 175 + 120), (slotMachine.get_width(), slotMachine.get_height() / 3.3))
         slotLine3 = pygame.Rect((145, self.height // 2 - 175 + 240), (slotMachine.get_width(), slotMachine.get_height() / 3.3))
-        slot_line_rects = [slotLine1, slotLine2, slotLine3]
 
         # buttons for slot machine
         betButton = pygame.transform.scale(pygame.image.load("objects/buttonBet.png"), (191.36, 63.18)).convert_alpha()
@@ -543,22 +547,30 @@ class Game:
                                 slot.default()
                             self.update_spin() # logic for getting wins
 
-
             self.screen.fill(self.bgColor)
             self.screen.blit(pauseButton, (720, 20))
             self.screen.blit(slotMachine, slotMachine_rect)
-            for slot in self.slot[0:3]:
-                slot.draw(self.screen, slotLine1)
-                if slot.spinning:
-                    slot.update_position1()
-            for slot in self.slot[3:6]:
-                slot.draw(self.screen, slotLine2)
-                if slot.spinning:
-                    slot.update_position2()
-            for slot in self.slot[6:9]:
-                slot.draw(self.screen, slotLine3)
-                if slot.spinning:
-                    slot.update_position3()
+            for i, slot in enumerate(self.slot):
+                row = i // 3
+                col = i % 3
+                if i < 3:
+                    slot.draw(self.screen, slotLine1)
+                    if slot.spinning:
+                        slot.update_position1()
+                        if not slot.spinning:
+                            slot.update_draw(self.screen, self.selected_rows, slotLine1, row, col)
+                elif i < 6:
+                    slot.draw(self.screen, slotLine2)
+                    if slot.spinning:
+                        slot.update_position2()
+                        if not slot.spinning:
+                            slot.update_draw(self.screen, self.selected_rows, slotLine2, row, col)
+                elif i < 9:
+                    slot.draw(self.screen, slotLine3)
+                    if slot.spinning:
+                        slot.update_position3()
+                        if not slot.spinning:
+                            slot.update_draw(self.screen, self.selected_rows, slotLine3, row, col)
 
             self.screen.blit(betButton, betButtonHitBox)
             self.screen.blit(lineButton, lineButtonHitBox)
@@ -573,3 +585,7 @@ class Game:
 if __name__ == "__main__":
     game = Game()
     game.run()
+
+# fix
+# logic for betting and lines
+# Winnings on lines not matching e.g line 1 is determining lines 2 and 3
