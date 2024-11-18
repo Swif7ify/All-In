@@ -12,8 +12,8 @@ class Spin:
         self.idxM = 0
 
         self.message = ["Welcome, Press handle to Play",
-                        f"You Lose {self.Bet}, Balance from {self.Balance + self.Bet} to Balance {self.Balance}",
-                        f"You Win {self.amount}"]
+                        f"You Lose {Bet} coins, Balance from {Balance + Bet} to Balance {Balance}",
+                        f"You Win {self.amount} coins on {Lines} lines"]
 
         self.selected_rows = []
 
@@ -31,7 +31,7 @@ class Spin:
         self.slotLine = {
             self.red_apple: 3,
             self.green_apple: 2,
-            self.peach: 4,
+            self.peach: 5,
             self.lemon: 6
         }
 
@@ -44,10 +44,11 @@ class Spin:
         bet = self.Bet
         balance = self.Balance
         amount = self.amount
+        lines = self.Lines
 
         self.message = ["Welcome, Press handle to Play",
-                        f"You Lose {bet}, Balance from {balance + bet} to Balance {balance}",
-                        f"You Win {amount}"]
+                        f"You Lose {bet * lines} coins, Balance from {balance + bet * lines} to Balance {balance}",
+                        f"You Win {amount} coins on {lines} lines"]
 
     def slot_spin(self):
         slot_items = []
@@ -82,13 +83,14 @@ class Spin:
             self.idxM = 2
             self.amount = self.Bet * self.winnings
             self.Balance += self.amount
+            self.update_condition()
         else:
             pygame.mixer.Sound("sounds/slotLose.mp3").play()
             self.idxM = 1
-            self.Balance -= self.Bet
+            self.Balance -= self.Bet * self.Lines
+            self.update_condition()
             return self.Balance
 
-        self.update_condition()
         return self.Balance
 
     def start(self):

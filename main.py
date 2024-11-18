@@ -1,4 +1,6 @@
 import pygame
+import pickle
+import os
 from handle import Handle
 from spin import Spin
 from slots import Slot
@@ -42,7 +44,35 @@ class Game:
         self.delay_duration = 3100
         self.clock = pygame.time.Clock()
 
+    def save_game(self):
+        folder = 'gameData'
+        if not os.path.exists(folder):
+            os.makedirs(folder)
+        file_path = os.path.join(folder, 'game_state.pkl')
+        game_state = {
+            'balance': self.balance,
+            'amountLines': self.amountLines,
+            'amountBet': self.amountBet,
+            'protect': self.protect
+        }
+        with open(file_path, 'wb') as f:
+            pickle.dump(game_state, f)
+
+    def load_game(self):
+        try:
+            folder = "gameData"
+            file_path = os.path.join(folder, 'game_state.pkl')
+            with open(file_path, 'rb') as f:
+                game_state = pickle.load(f)
+                self.balance = game_state.get('balance', 0)
+                self.amountLines = game_state.get('amountLines', 0)
+                self.amountBet = game_state.get('amountBet', 0)
+                self.protect = game_state.get('protect', "")
+        except FileNotFoundError:
+            pass
+
     def main_screen(self):
+        cursor_over_button = False
         self.screen.fill(self.bgColor)
         # title Font and Text
         titleFont = pygame.font.Font("fonts/Quinquefive-ALoRM.ttf", 38)
@@ -56,8 +86,15 @@ class Game:
 
         # game icon and start button
         gameIcon = pygame.transform.scale(pygame.image.load("objects/icon.png"), (90, 140)).convert_alpha()
-        startButton = pygame.transform.scale(pygame.image.load("objects/buttonStart.png"), (275, 100)).convert_alpha()
-        startButtonHitBox = startButton.get_rect(center=(self.width // 2, self.height // 2 + 150))
+
+        startText = self.font.render("START", True, (0, 0, 0))
+        startHitBox = startText.get_rect(center=(self.width // 2, self.height // 2 + 120))
+
+        resumeText = self.font.render("RESUME", True, (0, 0, 0))
+        resumeHitBox = resumeText.get_rect(center=(self.width // 2, self.height // 2 + 180))
+
+        quitText = self.font.render("QUIT", True, (0, 0, 0))
+        quitHitBox = quitText.get_rect(center=(self.width // 2, self.height // 2 + 240))
 
         # How to play
         howToPlay = pygame.transform.scale(pygame.image.load("objects/howtoplay.png"), (27, 40)).convert_alpha()
@@ -73,7 +110,9 @@ class Game:
         self.screen.blit(subTitleText, subTitleText_rect)
         self.screen.blit(titleText, titleText_rect)
         self.screen.blit(gameIcon, (self.width // 2 - 50, self.height // 2 - 100))
-        self.screen.blit(startButton, startButtonHitBox)
+        self.screen.blit(startText, startHitBox)
+        self.screen.blit(resumeText, resumeHitBox)
+        self.screen.blit(quitText, quitHitBox)
         self.screen.blit(creatorText, creatorText_rect)
 
         pygame.display.update()
@@ -85,15 +124,17 @@ class Game:
                     exit()
 
                 if event.type == pygame.MOUSEMOTION:
-                    if startButtonHitBox.collidepoint(event.pos):
+                    if startHitBox.collidepoint(event.pos) or resumeHitBox.collidepoint(event.pos) or quitHitBox.collidepoint(event.pos) or howToPlayHitBox.collidepoint(event.pos):
                         pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_HAND)
-                    elif howToPlayHitBox.collidepoint(event.pos):
-                        pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_HAND)
+                        if not cursor_over_button:
+                            pygame.mixer.Sound("sounds/buttonHover.mp3").play()
+                            cursor_over_button = True
                     else:
+                        cursor_over_button = False
                         pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_ARROW)
 
                 if event.type == pygame.MOUSEBUTTONDOWN:
-                    if startButtonHitBox.collidepoint(event.pos):
+                    if startHitBox.collidepoint(event.pos):
                         pygame.mixer.Sound("sounds/buttonClick.mp3").play()
                         self.information()
                         return
@@ -101,6 +142,20 @@ class Game:
                         pygame.mixer.Sound("sounds/buttonClick.mp3").play()
                         self.how_to_play()
                         return
+                    elif resumeHitBox.collidepoint(event.pos):
+                        folder = 'gameData'
+                        filename = 'game_state.pkl'
+                        if os.path.exists(os.path.join(folder, filename)):
+                            self.load_game()
+                            pygame.mixer.Sound("sounds/transition.mp3").play()
+                            pygame.mixer.music.stop()
+                            pygame.mixer.music.load("sounds/bgm2.mp3")
+                            pygame.time.delay(2000)
+                            pygame.mixer.music.play(-1)
+                            return
+                    elif quitHitBox.collidepoint(event.pos):
+                        pygame.quit()
+                        exit()
 
     def how_to_play(self):
         self.screen.fill((0, 0, 0))
@@ -199,9 +254,9 @@ class Game:
                         pygame.mixer.music.load("sounds/bgm2.mp3")
                         pygame.time.delay(2000)
                         pygame.mixer.music.play(-1)
+                        self.protect = text1
                         self.balance = int(text2)
                         return
-
                     elif creditCardInput.collidepoint(event.pos):
                         active1 = True
                         active2 = False
@@ -274,17 +329,21 @@ class Game:
         # options
         font = pygame.font.Font("fonts/GamestationCond.otf", 32)
         resumeText = font.render("Resume Your Wealth", True, (0, 0, 0))
-        resumeTextHitBox = resumeText.get_rect(center=(self.width // 2, self.height // 2 - 50))
+        resumeTextHitBox = resumeText.get_rect(center=(self.width // 2, self.height // 2 - 70))
         restartText = font.render("Restart Your Pathetic Life", True, (0, 0, 0))
-        restartTextHitBox = restartText.get_rect(center=(self.width // 2, self.height // 2 + 20))
+        restartTextHitBox = restartText.get_rect(center=(self.width // 2, self.height // 2))
         quitText = font.render("You Gay Why You Quittin'", True, (0, 0, 0))
-        quitTextHitBox = quitText.get_rect(center=(self.width // 2, self.height // 2 + 90))
+        quitTextHitBox = quitText.get_rect(center=(self.width // 2, self.height // 2 + 70))
         multiplierText = font.render("Fruit Multiplier", True, (0, 0, 0))
-        multiplierTextHitBox = multiplierText.get_rect(center=(self.width // 2, self.height // 2 + 160))
+        multiplierTextHitBox = multiplierText.get_rect(center=(self.width // 2, self.height // 2 + 140))
+
+        saveText = font.render("Save Game", True, (0, 0, 0))
+        saveTextHitBox = saveText.get_rect(center=(self.width // 2, self.height // 2 + 210))
 
         creatorFont = pygame.font.Font("fonts/Quinquefive-ALoRM.ttf", 16)
         creatorText = creatorFont.render("Created by: Earl Ordovez", True, (0, 0, 0))
         creatorText_rect = creatorText.get_rect(center=(self.width // 2, self.height - 30))
+
 
         arrow_offset = 50
         arrow_color = (0, 0, 0)
@@ -300,7 +359,7 @@ class Game:
 
                 if event.type == pygame.MOUSEMOTION:
                     if resumeTextHitBox.collidepoint(event.pos) or restartTextHitBox.collidepoint(
-                            event.pos) or quitTextHitBox.collidepoint(event.pos) or multiplierTextHitBox.collidepoint(event.pos):
+                            event.pos) or quitTextHitBox.collidepoint(event.pos) or multiplierTextHitBox.collidepoint(event.pos) or saveTextHitBox.collidepoint(event.pos):
                         if not cursor_over_button:
                             pygame.mixer.Sound("sounds/buttonHover.mp3").play()
                             cursor_over_button = True
@@ -311,7 +370,7 @@ class Game:
 
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     if resumeTextHitBox.collidepoint(event.pos) or restartTextHitBox.collidepoint(
-                        event.pos) or quitTextHitBox.collidepoint(event.pos) or multiplierTextHitBox.collidepoint(event.pos):
+                        event.pos) or quitTextHitBox.collidepoint(event.pos) or multiplierTextHitBox.collidepoint(event.pos) or saveTextHitBox.collidepoint(event.pos):
                         pygame.mixer.Sound("sounds/buttonClick.mp3").play()
 
                     if resumeTextHitBox.collidepoint(event.pos):
@@ -329,6 +388,10 @@ class Game:
                         paused = False
                         self.fruit_multiplier()
 
+                    elif saveTextHitBox.collidepoint(event.pos):
+                        self.save_game()
+                        paused = False
+
             self.screen.fill(self.bgColor)
             self.screen.blit(titleText, titleText_rect)
             self.screen.blit(subText, subText_rect)
@@ -336,6 +399,7 @@ class Game:
             self.screen.blit(restartText, restartTextHitBox)
             self.screen.blit(quitText, quitTextHitBox)
             self.screen.blit(multiplierText, multiplierTextHitBox)
+            self.screen.blit(saveText, saveTextHitBox)
             self.screen.blit(creatorText, creatorText_rect)
 
             if resumeTextHitBox.collidepoint(mouse_pos):
@@ -361,6 +425,12 @@ class Game:
                     (multiplierTextHitBox.left - arrow_offset + arrow_size, multiplierTextHitBox.centery),
                     (multiplierTextHitBox.left - arrow_offset, multiplierTextHitBox.centery - arrow_size),
                     (multiplierTextHitBox.left - arrow_offset, multiplierTextHitBox.centery + arrow_size)
+                ])
+            elif saveTextHitBox.collidepoint(mouse_pos):
+                pygame.draw.polygon(self.screen, arrow_color, [
+                    (saveTextHitBox.left - arrow_offset + arrow_size, saveTextHitBox.centery),
+                    (saveTextHitBox.left - arrow_offset, saveTextHitBox.centery - arrow_size),
+                    (saveTextHitBox.left - arrow_offset, saveTextHitBox.centery + arrow_size)
                 ])
 
             pygame.display.update()
@@ -574,9 +644,9 @@ class Game:
     def run(self): # Game loop
         self.main_screen()
         pygame.mixer.music.set_volume(0.5)
-        # if self.protect == "":
-        #     pygame.quit()
-        #     exit()
+        if self.protect == "":
+            pygame.quit()
+            exit()
         pauseButton = pygame.transform.scale(pygame.image.load("objects/pauseButton.png"), (50, 50)).convert_alpha()
         pauseButtonHitbox = pauseButton.get_rect(topleft=(720, 20))
 
@@ -621,7 +691,7 @@ class Game:
                     if lineButtonHitBox.collidepoint(event.pos):
                         pygame.mixer.Sound("sounds/linesAmount.mp3").play()
                         self.add_lines()
-                    elif self.handle_sprite.rect.collidepoint(event.pos) and self.amountBet != 0 and self.amountLines != 0:
+                    elif self.handle_sprite.rect.collidepoint(event.pos) and self.amountBet != 0 and self.amountLines != 0 and self.amountBet * self.amountLines <= self.balance:
                         self.handle_sprite.handle_click(event.pos)
                         if self.handle_sprite.index == 0:
                             pygame.mixer.Sound("sounds/handleSound.mp3").play()
