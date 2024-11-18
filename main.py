@@ -70,6 +70,12 @@ class Game:
 
     def main_screen(self):
         cursor_over_button = False
+        resumeActive = False
+        folder = 'gameData'
+        file_path = os.path.join(folder, 'game_state')
+        if os.path.exists(file_path + '.dat'):
+            resumeActive = True
+
         self.screen.fill(self.bgColor)
         # title Font and Text
         titleFont = pygame.font.Font("fonts/Quinquefive-ALoRM.ttf", 38)
@@ -87,7 +93,8 @@ class Game:
         startText = self.font.render("START", True, (0, 0, 0))
         startHitBox = startText.get_rect(center=(self.width // 2, self.height // 2 + 120))
 
-        resumeText = self.font.render("RESUME", True, (0, 0, 0))
+        resumeColor = (0, 0, 0) if resumeActive else (154, 152, 152)
+        resumeText = self.font.render("RESUME", True, resumeColor)
         resumeHitBox = resumeText.get_rect(center=(self.width // 2, self.height // 2 + 180))
 
         quitText = self.font.render("QUIT", True, (0, 0, 0))
@@ -121,7 +128,7 @@ class Game:
                     exit()
 
                 if event.type == pygame.MOUSEMOTION:
-                    if startHitBox.collidepoint(event.pos) or resumeHitBox.collidepoint(event.pos) or quitHitBox.collidepoint(event.pos) or howToPlayHitBox.collidepoint(event.pos):
+                    if startHitBox.collidepoint(event.pos) or quitHitBox.collidepoint(event.pos) or howToPlayHitBox.collidepoint(event.pos) or resumeActive and resumeHitBox.collidepoint(event.pos):
                         pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_HAND)
                         if not cursor_over_button:
                             pygame.mixer.Sound("sounds/buttonHover.mp3").play()
@@ -140,9 +147,7 @@ class Game:
                         self.how_to_play()
                         return
                     elif resumeHitBox.collidepoint(event.pos):
-                        folder = 'gameData'
-                        file_path = os.path.join(folder, 'game_state')
-                        if os.path.exists(file_path + '.dat'):
+                        if resumeActive:
                             self.load_game()
                             pygame.mixer.Sound("sounds/transition.mp3").play()
                             pygame.mixer.music.stop()
