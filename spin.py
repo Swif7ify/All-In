@@ -3,9 +3,17 @@ import random
 class Spin:
     def __init__(self, Balance, Lines, Bet):
         self.screen = pygame.display.set_mode((800, 700))
+        pygame.mixer.init()
         self.Balance = Balance
         self.Lines = Lines
         self.Bet = Bet
+        self.amount = 0
+
+        self.idxM = 0
+
+        self.message = ["Welcome, Press handle to Play",
+                        f"You Lose {self.Bet}, Balance from {self.Balance + self.Bet} to Balance {self.Balance}",
+                        f"You Win {self.amount}"]
 
         self.selected_rows = []
 
@@ -20,75 +28,67 @@ class Spin:
 
         self.spinning = False
 
-        self.a_line = [self.red_apple,
-                  self.green_apple,
-                  self.green_apple,
-                  self.red_apple,
-                  self.red_apple,
-                  self.peach,
-                  self.peach,
-                  self.peach,
-                  self.peach]
+        self.slotLine = {
+            self.red_apple: 3,
+            self.green_apple: 2,
+            self.peach: 4,
+            self.lemon: 6
+        }
 
-        self.b_line = [self.red_apple,
-                  self.green_apple,
-                  self.green_apple,
-                  self.red_apple,
-                  self.red_apple,
-                  self.peach,
-                  self.peach,
-                  self.peach,
-                  self.peach]
-
-        self.c_line = [self.red_apple,
-                  self.green_apple,
-                  self.green_apple,
-                  self.red_apple,
-                  self.red_apple,
-                  self.peach,
-                  self.peach,
-                  self.peach,
-                  self.peach]
-
-        self.multipliers = {self.lemon: 1.5,
-                            self.peach: 2,
-                            self.red_apple: 3,
+        self.multipliers = {self.lemon: 2,
+                            self.peach: 3,
+                            self.red_apple: 4,
                             self.green_apple: 5}
 
+    def update_condition(self):
+        bet = self.Bet
+        balance = self.Balance
+        amount = self.amount
+
+        self.message = ["Welcome, Press handle to Play",
+                        f"You Lose {bet}, Balance from {balance + bet} to Balance {balance}",
+                        f"You Win {amount}"]
+
     def slot_spin(self):
+        slot_items = []
+        for item, count in self.slotLine.items():
+            slot_items.extend([item] * count)
         self.selected_rows = [
-            [(random.choice(self.a_line)) for _ in range(self.COLS)],
-            [(random.choice(self.b_line)) for _ in range(self.COLS)],
-            [(random.choice(self.c_line)) for _ in range(self.COLS)]
+            [(random.choice(slot_items)) for _ in range(self.COLS)],
+            [(random.choice(slot_items)) for _ in range(self.COLS)],
+            [(random.choice(slot_items)) for _ in range(self.COLS)]
         ]
         return self.selected_rows
 
     def check_winnings(self):
-        print(self.Lines)
         condition = False
-        for row in self.slot_spin():
+        for idx, row in enumerate(self.slot_spin()):
+
             if row[0] == row[1] == row[2]:
-                if self.Lines == 1:
-                    self.winnings += self.multipliers.get(row[0])
-                    condition = True
-                    break
-                elif self.Lines == 2:
-                    self.winnings += self.multipliers.get(row[0])
-                    if row == 1:
-                        break
-                else:
-                    self.winnings += self.multipliers.get(row[0])
+                self.winnings += self.multipliers.get(row[0])
 
                 condition = True
 
+                if self.Lines == 1 and idx == 0:
+                    break
+                elif self.Lines == 2 and idx == 1:
+                    break
+
+            if self.winnings == 4.5 or self.winnings == 6 or self.winnings == 9 or self.winnings == 15:
+                pygame.mixer.Sound("sounds/jackpot3X.mp3").play()
+
         if condition:
-            amount = self.Bet * self.winnings
-            self.Balance += amount
+            pygame.mixer.Sound("sounds/slotWin.mp3").play()
+            self.idxM = 2
+            self.amount = self.Bet * self.winnings
+            self.Balance += self.amount
         else:
+            pygame.mixer.Sound("sounds/slotLose.mp3").play()
+            self.idxM = 1
             self.Balance -= self.Bet
             return self.Balance
 
-
+        self.update_condition()
         return self.Balance
 
     def start(self):

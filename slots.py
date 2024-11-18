@@ -12,7 +12,7 @@ class Slot:
         self.image_height = self.red_apple.get_height()
 
         self.spinning = False
-
+        self.get_spin = False
         self.counter = 0
 
         # Displaying random image for slot spinning
@@ -32,6 +32,7 @@ class Slot:
                 self.counter += 1
             elif self.counter == 20:
                 self.y_change = 10
+                self.get_spin = True
             elif self.counter == 35:
                 self.y = (700 // 2 - 117) - (self.image_height // 2)
                 self.y_change = 0

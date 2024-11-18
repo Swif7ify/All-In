@@ -27,6 +27,7 @@ class Game:
         # spin logic
         self.spin = Spin(self.balance, self.amountLines, self.amountBet)
         self.selected_rows = []
+        self.idxM = 0
         # slot image
         self.slot = [Slot(195 + (i % 3) * 160, (700 // 2 - 117) - (96 // 2) + (i // 3) * 117) for i in range(9)]
         # input boxes in information
@@ -36,6 +37,9 @@ class Game:
         self.screen = pygame.display.set_mode((self.width, self.height))
         self.protect = ""
         self.running = True
+        self.delay_active = False
+        self.delay_start_time = 0
+        self.delay_duration = 3100
         self.clock = pygame.time.Clock()
 
     def main_screen(self):
@@ -275,6 +279,8 @@ class Game:
         restartTextHitBox = restartText.get_rect(center=(self.width // 2, self.height // 2 + 20))
         quitText = font.render("You Gay Why You Quittin'", True, (0, 0, 0))
         quitTextHitBox = quitText.get_rect(center=(self.width // 2, self.height // 2 + 90))
+        multiplierText = font.render("Fruit Multiplier", True, (0, 0, 0))
+        multiplierTextHitBox = multiplierText.get_rect(center=(self.width // 2, self.height // 2 + 160))
 
         creatorFont = pygame.font.Font("fonts/Quinquefive-ALoRM.ttf", 16)
         creatorText = creatorFont.render("Created by: Earl Ordovez", True, (0, 0, 0))
@@ -294,7 +300,7 @@ class Game:
 
                 if event.type == pygame.MOUSEMOTION:
                     if resumeTextHitBox.collidepoint(event.pos) or restartTextHitBox.collidepoint(
-                            event.pos) or quitTextHitBox.collidepoint(event.pos):
+                            event.pos) or quitTextHitBox.collidepoint(event.pos) or multiplierTextHitBox.collidepoint(event.pos):
                         if not cursor_over_button:
                             pygame.mixer.Sound("sounds/buttonHover.mp3").play()
                             cursor_over_button = True
@@ -305,7 +311,7 @@ class Game:
 
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     if resumeTextHitBox.collidepoint(event.pos) or restartTextHitBox.collidepoint(
-                        event.pos) or quitTextHitBox.collidepoint(event.pos):
+                        event.pos) or quitTextHitBox.collidepoint(event.pos) or multiplierTextHitBox.collidepoint(event.pos):
                         pygame.mixer.Sound("sounds/buttonClick.mp3").play()
 
                     if resumeTextHitBox.collidepoint(event.pos):
@@ -319,6 +325,9 @@ class Game:
                     elif quitTextHitBox.collidepoint(event.pos):
                         pygame.quit()
                         exit()
+                    elif multiplierTextHitBox.collidepoint(event.pos):
+                        paused = False
+                        self.fruit_multiplier()
 
             self.screen.fill(self.bgColor)
             self.screen.blit(titleText, titleText_rect)
@@ -326,6 +335,7 @@ class Game:
             self.screen.blit(resumeText, resumeTextHitBox)
             self.screen.blit(restartText, restartTextHitBox)
             self.screen.blit(quitText, quitTextHitBox)
+            self.screen.blit(multiplierText, multiplierTextHitBox)
             self.screen.blit(creatorText, creatorText_rect)
 
             if resumeTextHitBox.collidepoint(mouse_pos):
@@ -346,7 +356,68 @@ class Game:
                     (quitTextHitBox.left - arrow_offset, quitTextHitBox.centery - arrow_size),
                     (quitTextHitBox.left - arrow_offset, quitTextHitBox.centery + arrow_size)
                 ])
+            elif multiplierTextHitBox.collidepoint(mouse_pos):
+                pygame.draw.polygon(self.screen, arrow_color, [
+                    (multiplierTextHitBox.left - arrow_offset + arrow_size, multiplierTextHitBox.centery),
+                    (multiplierTextHitBox.left - arrow_offset, multiplierTextHitBox.centery - arrow_size),
+                    (multiplierTextHitBox.left - arrow_offset, multiplierTextHitBox.centery + arrow_size)
+                ])
 
+            pygame.display.update()
+
+    def fruit_multiplier(self):
+        titleFont = pygame.font.Font("fonts/Quinquefive-ALoRM.ttf", 24)
+        subTitleFont = pygame.font.Font("fonts/GamestationCond.otf", 32)
+        titleText = titleFont.render("Fruit Multiplier", True, (0, 0, 0))
+        titleText_rect = titleText.get_rect(center=(self.width // 2, self.height // 2 - 250))
+        backButton = pygame.transform.scale(pygame.image.load("objects/playButton.png"), (50, 50)).convert_alpha()
+        backButtonHitBox = backButton.get_rect(topleft=(720, 20))
+        creatorFont = pygame.font.Font("fonts/Quinquefive-ALoRM.ttf", 16)
+        creatorText = creatorFont.render("Created by: Earl Ordovez", True, (0, 0, 0))
+        creatorText_rect = creatorText.get_rect(center=(self.width // 2, self.height - 30))
+
+        # fruit images
+        lemon = pygame.image.load("objects/lemon.png").convert_alpha()
+        lemonText = subTitleFont.render("Lemon: 2x", True, (0, 0, 0))
+        redApple = pygame.image.load("objects/redApple.png").convert_alpha()
+        redAppleText = subTitleFont.render("Red Apple: 4x", True, (0, 0, 0))
+        greenApple = pygame.image.load("objects/greenApple.png").convert_alpha()
+        greenAppleText = subTitleFont.render("Green Apple: 5x", True, (0, 0, 0))
+        peach = pygame.image.load("objects/peach.png").convert_alpha()
+        peachText = subTitleFont.render("Peach: 3x", True, (0, 0, 0))
+
+        paused = True
+        while paused:
+            self.screen.fill(self.bgColor)
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    exit()
+
+                elif event.type == pygame.MOUSEMOTION:
+                    if backButtonHitBox.collidepoint(event.pos):
+                        pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_HAND)
+                    else:
+                        pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_ARROW)
+
+                elif event.type == pygame.MOUSEBUTTONDOWN:
+                    if backButtonHitBox.collidepoint(event.pos):
+                        pygame.mixer.Sound("sounds/buttonClick.mp3").play()
+                        paused = False
+
+            self.screen.blit(titleText, titleText_rect)
+            self.screen.blit(backButton, backButtonHitBox)
+            gap = 20  # Define the gap between images
+            self.screen.blit(lemon, (self.width // 2 - 140, self.height // 2 - 200))
+            self.screen.blit(redApple, (self.width // 2 - 140, self.height // 2 - 100 + gap))
+            self.screen.blit(greenApple, (self.width // 2 - 140, self.height // 2 + gap * 2))
+            self.screen.blit(peach, (self.width // 2 - 140, self.height // 2 + 100 + gap * 3))
+
+            self.screen.blit(lemonText, (self.width // 2 - 30, self.height // 2 - 160))
+            self.screen.blit(redAppleText, (self.width // 2 - 30, self.height // 2 - 60 + gap))
+            self.screen.blit(greenAppleText, (self.width // 2 - 30, self.height // 2 + 40 + gap * 2))
+            self.screen.blit(peachText, (self.width // 2 - 30, self.height // 2 + 140 + gap * 3))
+            self.screen.blit(creatorText, creatorText_rect)
             pygame.display.update()
 
     def restart(self):
@@ -482,7 +553,9 @@ class Game:
         pygame.display.update()
 
     def update_spin(self):
-        self.spin = Spin(self.balance, self.amountLines, self.amountBet)
+        self.spin.Balance = self.balance
+        self.spin.Lines = self.amountLines
+        self.spin.Bet = self.amountBet
         amount, self.selected_rows = self.spin.start()
         self.balance = amount
         for i, slot in enumerate(self.slot):
@@ -490,8 +563,15 @@ class Game:
             col = i % 3
             slot.current_image = self.selected_rows[row][col]
 
-    def run(self):
-        # Game loop
+    def take_spin(self):
+        # Check if the delay is active and the delay duration has passed
+        if self.delay_active:
+            current_time = pygame.time.get_ticks()
+            if current_time - self.delay_start_time >= self.delay_duration:
+                self.update_spin()  # Call the spin logic after delay
+                self.delay_active = False
+
+    def run(self): # Game loop
         self.main_screen()
         pygame.mixer.music.set_volume(0.5)
         # if self.protect == "":
@@ -514,7 +594,11 @@ class Game:
         lineButton = pygame.transform.scale(pygame.image.load("objects/buttonLines.png"), (191.36, 63.18)).convert_alpha()
         lineButtonHitBox = lineButton.get_rect(center=(self.width // 2 + 110, self.height // 2 + 230))
 
+
+
         while self.running:
+            messageText = self.font.render(self.spin.message[self.idxM], True, (0, 0, 0))
+            messageText_rect = messageText.get_rect(center=(self.width // 2, self.height - 50))
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.running = False
@@ -537,7 +621,7 @@ class Game:
                     if lineButtonHitBox.collidepoint(event.pos):
                         pygame.mixer.Sound("sounds/linesAmount.mp3").play()
                         self.add_lines()
-                    elif self.handle_sprite.rect.collidepoint(event.pos):
+                    elif self.handle_sprite.rect.collidepoint(event.pos) and self.amountBet != 0 and self.amountLines != 0:
                         self.handle_sprite.handle_click(event.pos)
                         if self.handle_sprite.index == 0:
                             pygame.mixer.Sound("sounds/handleSound.mp3").play()
@@ -545,11 +629,15 @@ class Game:
                             for slot in self.slot:
                                 slot.spinning = True
                                 slot.default()
-                            self.update_spin() # logic for getting wins
+
+                            self.delay_active = True
+                            self.delay_start_time = pygame.time.get_ticks()
+
 
             self.screen.fill(self.bgColor)
             self.screen.blit(pauseButton, (720, 20))
             self.screen.blit(slotMachine, slotMachine_rect)
+            self.screen.blit(messageText, messageText_rect)
             for i, slot in enumerate(self.slot):
                 row = i // 3
                 col = i % 3
@@ -558,6 +646,7 @@ class Game:
                     if slot.spinning:
                         slot.update_position1()
                         if not slot.spinning:
+                            self.idxM = self.spin.idxM
                             slot.update_draw(self.screen, self.selected_rows, slotLine1, row, col)
                 elif i < 6:
                     slot.draw(self.screen, slotLine2)
@@ -572,6 +661,7 @@ class Game:
                         if not slot.spinning:
                             slot.update_draw(self.screen, self.selected_rows, slotLine3, row, col)
 
+            self.take_spin()
             self.screen.blit(betButton, betButtonHitBox)
             self.screen.blit(lineButton, lineButtonHitBox)
             self.all_sprites.update()
@@ -585,7 +675,3 @@ class Game:
 if __name__ == "__main__":
     game = Game()
     game.run()
-
-# fix
-# logic for betting and lines
-# Winnings on lines not matching e.g line 1 is determining lines 2 and 3
