@@ -20,7 +20,6 @@ class Spin:
         self.ROWS = 3
         self.COLS = 3
 
-        self.winnings = 0
         self.lemon = pygame.image.load("objects/lemon.png").convert_alpha() # lowest value
         self.red_apple = pygame.image.load("objects/redApple.png").convert_alpha() # second-highest value
         self.green_apple = pygame.image.load("objects/greenApple.png").convert_alpha() # highest value
@@ -29,10 +28,10 @@ class Spin:
         self.spinning = False
 
         self.slotLine = {
-            self.red_apple: 3,
-            self.green_apple: 2,
-            self.peach: 3,
-            self.lemon: 6
+            self.red_apple: 4,
+            self.green_apple: 3,
+            self.peach: 6,
+            self.lemon: 8
         }
 
         self.multipliers = {self.lemon: 2,
@@ -62,11 +61,12 @@ class Spin:
         return self.selected_rows
 
     def check_winnings(self):
+        winnings = 0
         condition = False
         for idx, row in enumerate(self.slot_spin()):
 
             if row[0] == row[1] == row[2]:
-                self.winnings += self.multipliers.get(row[0])
+                winnings += self.multipliers.get(row[0])
 
                 condition = True
 
@@ -75,13 +75,13 @@ class Spin:
                 elif self.Lines == 2 and idx == 1:
                     break
 
-            if self.winnings == 4.5 or self.winnings == 6 or self.winnings == 9 or self.winnings == 15:
+            if winnings == 4.5 or winnings == 6 or winnings == 9 or winnings == 15:
                 pygame.mixer.Sound("sounds/jackpot3X.mp3").play()
 
         if condition:
             pygame.mixer.Sound("sounds/slotWin.mp3").play()
             self.idxM = 2
-            self.amount = self.Bet * self.winnings
+            self.amount = self.Bet * winnings
             self.Balance += self.amount
             self.update_condition()
         else:
