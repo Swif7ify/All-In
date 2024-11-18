@@ -31,7 +31,7 @@ class Spin:
         self.slotLine = {
             self.red_apple: 3,
             self.green_apple: 2,
-            self.peach: 5,
+            self.peach: 3,
             self.lemon: 6
         }
 
