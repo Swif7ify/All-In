@@ -26,7 +26,7 @@ In All-In, players must weigh the risks and rewards of their actions to achieve 
 <br>
 
 
-https://github.com/user-attachments/assets/069f8118-5980-493f-802a-fb64bdeb0da1
+https://github.com/user-attachments/assets/8aa384b1-b2d8-4ae0-892c-cae3eb930f02
 
 <br>
 
