@@ -16,6 +16,11 @@
 <br>
 
 
+>[!NOTE]
+   >Updated: Fixed winnings doesn't resets **`18-11-2024 9:27PM`** <br>
+<br>
+
+
 ## 📚 Introduction
 All-In is a high-risk, high-reward game designed to challenge your luck and train your "SKILLS" and "DECISION MAKING". This game encourages strategic thinking and quick judgment. Each move you make holds the potential for massive gains or significant losses, immersing you in a dynamic environment where every choice matters. Whether you're looking to test your instincts, improve your risk assessment, or simply enjoy a thrilling experience, All-In delivers a perfect balance of excitement and mental challenge.
 <br>
