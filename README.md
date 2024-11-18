@@ -5,18 +5,21 @@
 
 
 ## ✨ Table of Contents
-- Introduction
-- Gameplay
-- Features
-- Installation
-- How to Play
-- Screenshots
-- Contributing
-- License
-- Contact
+- [Introduction](#-introduction)
+- [Gameplay](#-gameplay)
+- [Features](#-features)
+- [Installation](#-installation)
+- [How to Play](#-how-to-play)
+- [Screenshots](#-screenshots)
+- [License](#-license)
+- [Contact](#-contact)
+<br>
+
 
 ## 📚 Introduction
 All-In is a high-risk, high-reward game designed to challenge your luck and train your "SKILLS" and "DECISION MAKING". This game encourages strategic thinking and quick judgment. Each move you make holds the potential for massive gains or significant losses, immersing you in a dynamic environment where every choice matters. Whether you're looking to test your instincts, improve your risk assessment, or simply enjoy a thrilling experience, All-In delivers a perfect balance of excitement and mental challenge.
+<br>
+
 
 ## 💡 Gameplay
 In All-In, players must weigh the risks and rewards of their actions to achieve victory. The game offers a HANDLE to test your luck.
@@ -25,11 +28,17 @@ In All-In, players must weigh the risks and rewards of their actions to achieve 
 
 https://github.com/user-attachments/assets/069f8118-5980-493f-802a-fb64bdeb0da1
 
+<br>
+
+
 ## 🌟 Features
 - Gameplay with high stakes
 - Engaging visuals and user interface
 - Game save
 - Soothing sounds and background music
+<br>
+
+
 
 ## 📝 Installation
 1. Clone the repository
@@ -44,12 +53,16 @@ https://github.com/user-attachments/assets/069f8118-5980-493f-802a-fb64bdeb0da1
 4. Run the game
    ```bash
    python main.py
+<br>
+
 
 ## 💠 How to Play
 1. **Start the game:** Launch the game using the installation instructions.
 2. **Enter your information:** Navigate through game menus and input your information.
 3. **Enter your Bet:** Specify the amount of coins you want to bet.
 4. **Enter Lines:** Select how many lines you want to bet p.s bet is times the lines.
+<br>
+
 
 ## 📷 Screenshots
 
@@ -63,9 +76,13 @@ https://github.com/user-attachments/assets/069f8118-5980-493f-802a-fb64bdeb0da1
 
 Special thanks to:
 - [Joe Pea](https://gist.github.com/trusktr) for the grid template. Link: [Image Grid](https://gist.github.com/trusktr/93175b620d47827ffdedbf52433e3b37#file-image-grid-md)
+<br>
+
 
 ## 🪪 License 
 This project is licensed under the MIT License.
+<br>
+
 
 ## ☎ Contact
 For any inquiries or support, please reach out to [Swif7ify](mailto:earl.coding@gmail.com).
