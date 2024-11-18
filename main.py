@@ -1,5 +1,6 @@
 import pygame
 import pickle
+import shelve
 import os
 from handle import Handle
 from spin import Spin
@@ -48,22 +49,18 @@ class Game:
         folder = 'gameData'
         if not os.path.exists(folder):
             os.makedirs(folder)
-        file_path = os.path.join(folder, 'game_state.pkl')
-        game_state = {
-            'balance': self.balance,
-            'amountLines': self.amountLines,
-            'amountBet': self.amountBet,
-            'protect': self.protect
-        }
-        with open(file_path, 'wb') as f:
-            pickle.dump(game_state, f)
+        file_path = os.path.join(folder, 'game_state')
+        with shelve.open(file_path, 'c') as game_state:
+            game_state['balance'] = self.balance
+            game_state['amountLines'] = self.amountLines
+            game_state['amountBet'] = self.amountBet
+            game_state['protect'] = self.protect
 
     def load_game(self):
         try:
-            folder = "gameData"
-            file_path = os.path.join(folder, 'game_state.pkl')
-            with open(file_path, 'rb') as f:
-                game_state = pickle.load(f)
+            folder = 'gameData'
+            file_path = os.path.join(folder, 'game_state')
+            with shelve.open(file_path, 'r') as game_state:
                 self.balance = game_state.get('balance', 0)
                 self.amountLines = game_state.get('amountLines', 0)
                 self.amountBet = game_state.get('amountBet', 0)
@@ -144,8 +141,8 @@ class Game:
                         return
                     elif resumeHitBox.collidepoint(event.pos):
                         folder = 'gameData'
-                        filename = 'game_state.pkl'
-                        if os.path.exists(os.path.join(folder, filename)):
+                        file_path = os.path.join(folder, 'game_state')
+                        if os.path.exists(file_path + '.dat'):
                             self.load_game()
                             pygame.mixer.Sound("sounds/transition.mp3").play()
                             pygame.mixer.music.stop()
