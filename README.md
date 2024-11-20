@@ -7,6 +7,7 @@
 ## ✨ Table of Contents
 - [Introduction](#-introduction)
 - [Gameplay](#-gameplay)
+- [Downloads](#-Downloads)
 - [Features](#-features)
 - [Installation](#-installation)
 - [How to Play](#-how-to-play)
@@ -35,6 +36,12 @@ In All-In, players must weigh the risks and rewards of their actions to achieve 
 https://github.com/user-attachments/assets/8aa384b1-b2d8-4ae0-892c-cae3eb930f02
 
 <br>
+
+
+## 💼 Downloads
+You can visit my [itch.io](https://rinubi.itch.io/all-in) where the game is uploaded. Donation will be helpful. 
+<br>
+
 
 
 ## 🌟 Features
