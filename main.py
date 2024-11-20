@@ -1,5 +1,6 @@
 import pygame
 import os
+import sys
 from handle import Handle
 from spin import Spin
 from slots import Slot
@@ -11,6 +12,7 @@ class Game:
         pygame.mixer.init()
         pygame.mixer.music.load("sounds/bgm.mp3")
         pygame.mixer.music.play(-1)
+        pygame.mixer.music.set_volume(0.2)
         pygame.display.set_caption("All In")
         icon = pygame.image.load("objects/icon.png")
         pygame.display.set_icon(icon)
@@ -33,6 +35,7 @@ class Game:
         self.idxM = 0
         # slot image
         self.slot = [Slot(195 + (i % 3) * 160, (700 // 2 - 117) - (96 // 2) + (i // 3) * 117) for i in range(9)]
+        self.first_slot = self.slot[0]
         # input boxes in information
         self.active_color = (22, 190, 128)
         self.inactive_color = (201, 186, 167)
@@ -98,7 +101,7 @@ class Game:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
-                    exit()
+                    sys.exit()
 
                 if event.type == pygame.MOUSEMOTION:
                     if startHitBox.collidepoint(event.pos) or quitHitBox.collidepoint(event.pos) or resumeActive and resumeHitBox.collidepoint(event.pos):
@@ -144,7 +147,7 @@ class Game:
                             return
                     elif quitHitBox.collidepoint(event.pos):
                         pygame.quit()
-                        exit()
+                        sys.exit()
 
             # drawing object and fonts
             self.screen.fill(self.bgColor)
@@ -204,7 +207,7 @@ class Game:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
-                    exit()
+                    sys.exit()
 
                 if event.type == pygame.MOUSEMOTION:
                     if closeButtonHitBox.collidepoint(event.pos) or deleteButtonHitBox.collidepoint(event.pos):
@@ -262,7 +265,7 @@ class Game:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
-                    exit()
+                    sys.exit()
 
                 if event.type == pygame.MOUSEMOTION:
                     if closeButtonHitBox.collidepoint(event.pos):
@@ -311,7 +314,7 @@ class Game:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
-                    exit()
+                    sys.exit()
 
                 elif event.type == pygame.MOUSEMOTION:
                     if submitButtonHitBox.collidepoint(event.pos) or creditCardInput.collidepoint(event.pos) or amountInput.collidepoint(event.pos):
@@ -427,7 +430,7 @@ class Game:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
-                    exit()
+                    sys.exit()
 
                 if event.type == pygame.MOUSEMOTION:
                     if resumeTextHitBox.collidepoint(event.pos) or restartTextHitBox.collidepoint(
@@ -455,7 +458,7 @@ class Game:
                         self.restart()
                     elif quitTextHitBox.collidepoint(event.pos):
                         pygame.quit()
-                        exit()
+                        sys.exit()
                     elif multiplierTextHitBox.collidepoint(event.pos):
                         paused = False
                         self.fruit_multiplier()
@@ -538,7 +541,7 @@ class Game:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
-                    exit()
+                    sys.exit()
 
                 elif event.type == pygame.MOUSEMOTION:
                     if backButtonHitBox.collidepoint(event.pos):
@@ -592,7 +595,7 @@ class Game:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
-                    exit()
+                    sys.exit()
 
                 elif event.type == pygame.MOUSEMOTION:
                     if submitButtonHitBox.collidepoint(event.pos) or input_rect.collidepoint(event.pos) or backButtonHitBox.collidepoint(event.pos):
@@ -657,7 +660,7 @@ class Game:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
-                    exit()
+                    sys.exit()
 
                 elif event.type == pygame.MOUSEMOTION:
                     if oneLineButtonHitBox.collidepoint(event.pos) or twoLineButtonHitBox.collidepoint(event.pos) or threeLineButtonHitBox.collidepoint(event.pos) or backButtonHitBox.collidepoint(event.pos):
@@ -719,10 +722,9 @@ class Game:
 
     def run(self): # Game loop
         self.main_screen()
-        pygame.mixer.music.set_volume(0.5)
         if self.protect == "":
             pygame.quit()
-            exit()
+            sys.exit()
         pauseButton = pygame.transform.scale(pygame.image.load("objects/pauseButton.png"), (50, 50)).convert_alpha()
         pauseButtonHitbox = pauseButton.get_rect(topleft=(720, 20))
 
@@ -773,10 +775,8 @@ class Game:
                             for slot in self.slot:
                                 slot.spinning = True
                                 slot.default()
-
                             self.delay_active = True
                             self.delay_start_time = pygame.time.get_ticks()
-
 
             self.screen.fill(self.bgColor)
             self.screen.blit(pauseButton, (720, 20))

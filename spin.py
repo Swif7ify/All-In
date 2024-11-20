@@ -64,19 +64,16 @@ class Spin:
         winnings = 0
         condition = False
         for idx, row in enumerate(self.slot_spin()):
-
             if row[0] == row[1] == row[2]:
                 winnings += self.multipliers.get(row[0])
-
                 condition = True
-
                 if self.Lines == 1 and idx == 0:
                     break
                 elif self.Lines == 2 and idx == 1:
                     break
 
-            if winnings == 4.5 or winnings == 6 or winnings == 9 or winnings == 15:
-                pygame.mixer.Sound("sounds/jackpot3X.mp3").play()
+        if self.selected_rows[0] == self.selected_rows[1] == self.selected_rows[2]:
+            pygame.mixer.Sound("sounds/jackpot3X.mp3").play()
 
         if condition:
             pygame.mixer.Sound("sounds/slotWin.mp3").play()
