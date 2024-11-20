@@ -39,7 +39,7 @@ https://github.com/user-attachments/assets/8aa384b1-b2d8-4ae0-892c-cae3eb930f02
 
 
 ## 💼 Downloads
-You can visit my [itch.io](https://rinubi.itch.io/all-in) where the game is uploaded. Donation will be helpful. 
+You can visit my [itch.io](https://rinubi.itch.io/all-in) where the game exe is uploaded. Donation will be helpful. 
 <br>
 
 
