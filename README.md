@@ -7,6 +7,7 @@
 ## ✨ Table of Contents
 - [Introduction](#-introduction)
 - [Gameplay](#-gameplay)
+- [Downloads](#-Downloads)
 - [Features](#-features)
 - [Installation](#-installation)
 - [How to Play](#-how-to-play)
@@ -15,6 +16,12 @@
 - [Contact](#-contact)
 <br>
 
+
+>[!NOTE]
+   >Updated: Fixed winnings doesn't resets **`18-11-2024 9:27PM`** <br>
+<br>
+
+![COMMING SOON](https://github.com/user-attachments/assets/98d8fc7a-b078-427d-811e-1b063488dfcc)
 
 ## 📚 Introduction
 All-In is a high-risk, high-reward game designed to challenge your luck and train your "SKILLS" and "DECISION MAKING". This game encourages strategic thinking and quick judgment. Each move you make holds the potential for massive gains or significant losses, immersing you in a dynamic environment where every choice matters. Whether you're looking to test your instincts, improve your risk assessment, or simply enjoy a thrilling experience, All-In delivers a perfect balance of excitement and mental challenge.
@@ -29,6 +36,12 @@ In All-In, players must weigh the risks and rewards of their actions to achieve 
 https://github.com/user-attachments/assets/8aa384b1-b2d8-4ae0-892c-cae3eb930f02
 
 <br>
+
+
+## 💼 Downloads
+You can visit my [itch.io](https://rinubi.itch.io/all-in) where the game exe is uploaded. Donation will be helpful. 
+<br>
+
 
 
 ## 🌟 Features
