@@ -19,6 +19,7 @@
 
 >[!NOTE]
    >Updated: Fixed winnings doesn't resets **`18-11-2024 9:27PM`** <br>
+   >Updated: Fixed Volume and jackpot audio logic **`18-11-2024 11:30PM`** <br>
 <br>
 
 ![COMMING SOON](https://github.com/user-attachments/assets/98d8fc7a-b078-427d-811e-1b063488dfcc)
