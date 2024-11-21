@@ -70,6 +70,7 @@ You can visit my [itch.io](https://rinubi.itch.io/all-in) where the game exe is 
 4. Run the game
    ```bash
    python main.py
+5. Or go to my [itch.io](https://rinubi.itch.io/all-in) to dowload EXE file
 <br>
 
 
