@@ -616,7 +616,12 @@ class Game:
 
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     if restartButtonHitBox.collidepoint(event.pos):
-                        self.data.delete_game()
+                        resumeActive = False
+                        folder = 'gameData'
+                        file_path = os.path.join(folder, 'game_state')
+                        if os.path.exists(file_path + '.dat'):
+                            self.data.delete_game()
+                        
                         pygame.mixer.Sound("sounds/transition.mp3").play()
                         pygame.mixer.music.stop()
                         pygame.time.delay(2000)
@@ -882,8 +887,5 @@ class Game:
 if __name__ == "__main__":
     game = Game()
     game.run()
-
-# fix
-# add game over screen when balance < is 0
 
 # Donate to stonk my career https://paypal.me/EarlOrdovez
