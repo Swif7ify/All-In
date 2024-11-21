@@ -23,6 +23,7 @@
    >Updated: Fixed bug when restarting and do new game when you exit paused menu will show up **`21-11-2024 8:58AM`** <br>
    >Updated: Added amount must be greater than 500 **`21-11-2024 8:58AM`** <br>
    >Updated: Added gameover screen when balance reaches 0 **`21-11-2024 8:58AM`** <br>
+   >Updated: Fixed bug deleting non existent game save **`21-11-2024 8:36PM`** <br>
 <br>
 
 ![COMMING SOON](https://github.com/user-attachments/assets/98d8fc7a-b078-427d-811e-1b063488dfcc)
