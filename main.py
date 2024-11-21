@@ -297,6 +297,14 @@ class Game:
         amountText_rect = amountText.get_rect(center=(self.width // 2 - 277, self.height // 2 + 50))
         amountInput = pygame.Rect(73, 430, self.width // 2 + 245, 50)
 
+        # amount > 500
+        amountWarning = Font.render("Amount must be greater than 500", True, (255, 0, 0))
+        amountWarning_rect = amountWarning.get_rect(center=(self.width // 2, self.height // 2 + 50))
+
+        # back button
+        backButton = pygame.transform.scale(pygame.image.load("objects/playButton.png"), (50, 50)).convert_alpha()
+        backButtonHitBox = backButton.get_rect(topleft=(720, 20))
+
         # submit button
         submitButton = pygame.transform.scale(pygame.image.load("objects/buttonSubmit.png"), (275, 100)).convert_alpha()
         submitButtonHitBox = submitButton.get_rect(center=(self.width // 2, self.height // 2 + 250))
@@ -310,6 +318,7 @@ class Game:
         text2 = ""
 
         while True:
+            amount = int(text2) if text2 != "" else 0
             self.screen.fill((246, 223, 207))
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -317,13 +326,13 @@ class Game:
                     sys.exit()
 
                 elif event.type == pygame.MOUSEMOTION:
-                    if submitButtonHitBox.collidepoint(event.pos) or creditCardInput.collidepoint(event.pos) or amountInput.collidepoint(event.pos):
+                    if submitButtonHitBox.collidepoint(event.pos) or creditCardInput.collidepoint(event.pos) or amountInput.collidepoint(event.pos) or backButtonHitBox.collidepoint(event.pos):
                         pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_HAND)
                     else:
                         pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_ARROW)
 
                 elif event.type == pygame.MOUSEBUTTONDOWN:
-                    if submitButtonHitBox.collidepoint(event.pos) and text1 != "" and text2 != "":
+                    if submitButtonHitBox.collidepoint(event.pos) and text1 != "" and text2 != "" and amount >= 500:
                         pygame.mixer.Sound("sounds/transition.mp3").play()
                         pygame.mixer.music.stop()
                         pygame.mixer.music.load("sounds/bgm2.mp3")
@@ -331,6 +340,10 @@ class Game:
                         pygame.mixer.music.play(-1)
                         self.protect = text1
                         self.balance = int(text2)
+                        return
+                    elif backButtonHitBox.collidepoint(event.pos):
+                        pygame.mixer.Sound("sounds/buttonClick.mp3").play()
+                        self.run()
                         return
                     elif creditCardInput.collidepoint(event.pos):
                         active1 = True
@@ -376,6 +389,9 @@ class Game:
             self.screen.blit(titleText, titleText_rect)
             self.screen.blit(creditCardText, creditCardText_rect)
             self.screen.blit(amountText, amountText_rect)
+            if submitButtonHitBox.collidepoint(pygame.mouse.get_pos()) and amount < 500:
+                self.screen.blit(amountWarning, amountWarning_rect)
+            self.screen.blit(backButton, backButtonHitBox)
             self.screen.blit(submitButton, submitButtonHitBox)
             pygame.draw.rect(self.screen, color2, amountInput, 4)
             pygame.draw.rect(self.screen, color1, creditCardInput, 4)
@@ -456,6 +472,7 @@ class Game:
                         pygame.mixer.music.load("sounds/bgm.mp3")
                         pygame.mixer.music.play(-1)
                         self.restart()
+                        return
                     elif quitTextHitBox.collidepoint(event.pos):
                         pygame.quit()
                         sys.exit()
@@ -572,6 +589,46 @@ class Game:
     def restart(self):
         self.balance = 0
         self.run()
+
+    def game_over(self):
+        titleFont = pygame.font.Font("fonts/Quinquefive-ALoRM.ttf", 32)
+        titleText = titleFont.render("GAME OVER", True, (0, 0, 0))
+        titleText_rect = titleText.get_rect(center=(self.width // 2, self.height // 2 - 150))
+
+        restartText = self.font.render("Restart?", True, (0, 0, 0))
+        restartText_rect = restartText.get_rect(center=(self.width // 2, self.height // 2 - 70))
+
+        restartButton = pygame.transform.scale(pygame.image.load("objects/redButton.png"), (185, 185)).convert_alpha()
+        restartButtonHitBox = restartButton.get_rect(center=(self.width // 2, self.height // 2 + 80))
+
+        while True:
+            self.screen.fill(self.bgColor)
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+
+                elif event.type == pygame.MOUSEMOTION:
+                    if restartButtonHitBox.collidepoint(event.pos):
+                        pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_HAND)
+                    else:
+                        pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_ARROW)
+
+                elif event.type == pygame.MOUSEBUTTONDOWN:
+                    if restartButtonHitBox.collidepoint(event.pos):
+                        self.data.delete_game()
+                        pygame.mixer.Sound("sounds/transition.mp3").play()
+                        pygame.mixer.music.stop()
+                        pygame.time.delay(2000)
+                        pygame.mixer.music.load("sounds/bgm.mp3")
+                        pygame.mixer.music.play(-1)
+                        self.restart()
+                        return
+
+            self.screen.blit(titleText, titleText_rect)
+            self.screen.blit(restartText, restartText_rect)
+            self.screen.blit(restartButton, restartButtonHitBox)
+            pygame.display.update()
 
     def add_bet(self):
         titleFont = pygame.font.Font("fonts/Quinquefive-ALoRM.ttf", 32)
@@ -812,6 +869,12 @@ class Game:
             self.all_sprites.draw(self.screen)
             self.show_balance()
             self.update_information()
+            if self.balance <= 0:
+                pygame.mixer.music.stop()
+                pygame.mixer.stop()
+                pygame.mixer.Sound("sounds/gameOver.mp3").play()
+                pygame.time.delay(2000)
+                self.game_over()
             self.clock.tick(120)
             pygame.display.update()
 
@@ -819,3 +882,8 @@ class Game:
 if __name__ == "__main__":
     game = Game()
     game.run()
+
+# fix
+# add game over screen when balance < is 0
+
+# Donate to stonk my career https://paypal.me/EarlOrdovez
