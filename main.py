@@ -616,7 +616,6 @@ class Game:
 
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     if restartButtonHitBox.collidepoint(event.pos):
-                        resumeActive = False
                         folder = 'gameData'
                         file_path = os.path.join(folder, 'game_state')
                         if os.path.exists(file_path + '.dat'):
