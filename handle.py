@@ -12,7 +12,7 @@ class Handle(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(center=(800 // 2 + 318, 700 //2))
         self.animating = False
         self.delay_counter = 0
-        self.delay_duration = 400  # Number of frames to hold on handle2
+        self.delay_duration = 240  # Number of frames to hold on handle2
 
     def update(self):
         # If animating switch to handle2 then back to handle1 with delay

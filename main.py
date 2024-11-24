@@ -45,7 +45,7 @@ class Game:
         self.running = True
         self.delay_active = False
         self.delay_start_time = 0
-        self.delay_duration = 3100
+        self.delay_duration = 3100 # 3100
         self.clock = pygame.time.Clock()
 
     def main_screen(self):
@@ -616,7 +616,11 @@ class Game:
 
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     if restartButtonHitBox.collidepoint(event.pos):
-                        self.data.delete_game()
+                        folder = 'gameData'
+                        file_path = os.path.join(folder, 'game_state')
+                        if os.path.exists(file_path + '.dat'):
+                            self.data.delete_game()
+
                         pygame.mixer.Sound("sounds/transition.mp3").play()
                         pygame.mixer.music.stop()
                         pygame.time.delay(2000)
@@ -875,7 +879,7 @@ class Game:
                 pygame.mixer.Sound("sounds/gameOver.mp3").play()
                 pygame.time.delay(2000)
                 self.game_over()
-            self.clock.tick(120)
+            self.clock.tick(60)
             pygame.display.update()
 
 

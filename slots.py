@@ -19,7 +19,7 @@ class Slot:
 
         self.x = x_position
         self.y = y_position
-        self.y_change = 20
+        self.y_change = 40
         self.current_image = random.choice(self.index)
 
     def update_position1(self):
@@ -29,9 +29,9 @@ class Slot:
                 self.current_image = random.choice(self.index)
                 self.y = 200
                 self.counter += 1
-            elif self.counter == 20:
-                self.y_change = 10
-            elif self.counter == 35:
+            elif self.counter == 25:
+                self.y_change = 20
+            elif self.counter == 38:
                 self.y = (700 // 2 - 117) - (self.image_height // 2)
                 self.y_change = 0
                 self.counter = 0
@@ -44,9 +44,9 @@ class Slot:
                 self.current_image = random.choice(self.index)
                 self.y = 400
                 self.counter += 1
-            elif self.counter == 20:
-                self.y_change = 10
-            elif self.counter == 35:
+            elif self.counter == 25:
+                self.y_change = 20
+            elif self.counter == 38:
                 self.y = (700 // 2 - 117) - (self.image_height // 2) + (3 // 3) * 117
                 self.y_change = 0
                 self.counter = 0
@@ -59,9 +59,9 @@ class Slot:
                 self.current_image = random.choice(self.index)
                 self.y = 500
                 self.counter += 1
-            elif self.counter == 20:
-                self.y_change = 10
-            elif self.counter == 35:
+            elif self.counter == 25:
+                self.y_change = 20
+            elif self.counter == 38:
                 self.y = (700 // 2 - 117) - (self.image_height // 2) + (6 // 3) * 117
                 self.y_change = 0
                 self.counter = 0
@@ -79,5 +79,5 @@ class Slot:
         self.draw(screen, slot)
 
     def default(self):
-        self.y_change = 20
+        self.y_change = 40
 
