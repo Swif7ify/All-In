@@ -20,6 +20,11 @@
 >[!NOTE]
    >Updated: Fixed winnings doesn't resets **`18-11-2024 9:27PM`** <br>
    >Updated: Fixed Volume and jackpot audio logic **`18-11-2024 11:30PM`** <br>
+   >Updated: Fixed bug when restarting and do new game when you exit paused menu will show up **`21-11-2024 8:58AM`** <br>
+   >Updated: Added amount must be greater than 500 **`21-11-2024 8:58AM`** <br>
+   >Updated: Added gameover screen when balance reaches 0 **`21-11-2024 8:58AM`** <br>
+   >Updated: Fixed bug deleting non existent game save **`21-11-2024 8:36PM`** <br>
+   >Updated: Limit FPS from 120 -> 60 **`24-11-2024 9:15PM`** <br>
 <br>
 
 ![COMMING SOON](https://github.com/user-attachments/assets/98d8fc7a-b078-427d-811e-1b063488dfcc)
@@ -67,6 +72,7 @@ You can visit my [itch.io](https://rinubi.itch.io/all-in) where the game exe is 
 4. Run the game
    ```bash
    python main.py
+5. Or go to my [itch.io](https://rinubi.itch.io/all-in) to dowload EXE file
 <br>
 
 
